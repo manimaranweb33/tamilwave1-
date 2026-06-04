@@ -1,0 +1,3 @@
+import { InfoPage } from "@/components/info-page";
+export const metadata = { title: "Privacy Policy" };
+export default function PrivacyPage() { return <InfoPage eyebrow="Information" title="Privacy Policy"><p>TamilWave is designed to minimize data collection. Basic analytics may be used to understand page performance and improve the browsing experience.</p><p>Search terms may be processed to return relevant suggestions. Contact form details are used only to respond to messages. We do not sell personal information.</p><p>This policy should be reviewed and updated before deploying a production service with analytics, advertising, or third-party integrations.</p></InfoPage>; }

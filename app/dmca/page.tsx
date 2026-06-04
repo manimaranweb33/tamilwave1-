@@ -1,0 +1,3 @@
+import { InfoPage } from "@/components/info-page";
+export const metadata = { title: "DMCA" };
+export default function DmcaPage() { return <InfoPage eyebrow="Rights & requests" title="DMCA Policy"><p>TamilWave indexes entertainment metadata and does not host copyrighted media. Rights holders may contact us to request review of an indexed listing.</p><p>Please include your name, organization, the relevant URL, a description of the protected work, and a statement that you are authorized to submit the request.</p><p>Valid requests are reviewed promptly and appropriate action is taken where necessary.</p></InfoPage>; }
