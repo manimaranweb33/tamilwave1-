@@ -1,7 +1,7 @@
 import type { Content, ContentCast, ContentGenre, ContentPlatform, Genre, Person, Platform } from "@prisma/client";
 import type { MediaItem, ContentType } from "@/lib/types";
 
-type ContentWithRelations = Content & {
+export type ContentWithRelations = Content & {
   genres?: (ContentGenre & { genre: Genre })[];
   cast?: (ContentCast & { person: Person })[];
   platforms?: (ContentPlatform & { platform: Platform })[];
@@ -38,13 +38,28 @@ export function toMediaItem(content: ContentWithRelations, index = 0): MediaItem
     quality: content.quality ?? "HD",
     accent: content.accent,
     posterUrl: content.posterUrl ?? undefined,
-    description: content.description
+    backdropUrl: content.backdropUrl,
+    trailerUrl: content.trailerUrl,
+    description: content.description,
+    rating: content.rating,
+    ratingCount: content.ratingCount,
+    runtimeMinutes: content.runtimeMinutes,
+    releaseStatus: content.seriesStatus,
+    dbId: content.id
   };
 }
 
 export function contentToAdminJson(content: ContentWithRelations) {
   return {
     ...content,
+    backdropUrl: content.backdropUrl,
+    country: content.country,
+    seriesSeasons: content.seriesSeasons,
+    seriesEpisodes: content.seriesEpisodes,
+    seriesStatus: content.seriesStatus,
+    originalLanguage: content.originalLanguage,
+    dubbedLanguage: content.dubbedLanguage,
+    sourceTitle: content.sourceTitle,
     genreList: content.genres?.map((g) => g.genre) ?? [],
     cast: content.cast?.map((c) => ({
       id: c.id,

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireAdminSession, requireEditorSession } from "@/lib/admin/session";
-import { contentInclude, updateContent, softDeleteContent } from "@/lib/admin/content-service";
+import { archiveContent, contentInclude, updateContent } from "@/lib/admin/content-service";
 import { contentToAdminJson } from "@/lib/admin/content-mapper";
 import { logAudit } from "@/lib/admin/audit";
 
@@ -42,12 +42,13 @@ export async function DELETE(_request: Request, { params }: { params: { id: stri
   const { user, error } = await requireEditorSession();
   if (error) return error;
 
-  await softDeleteContent(params.id);
+  await archiveContent(params.id);
   await logAudit({
     actorId: user!.id,
     action: "DELETE",
     entity: "Content",
-    entityId: params.id
+    entityId: params.id,
+    metadata: { archived: true }
   });
   return new NextResponse(null, { status: 204 });
 }

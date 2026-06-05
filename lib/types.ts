@@ -11,5 +11,12 @@ export type MediaItem = {
   quality: string;
   accent: string;
   posterUrl?: string;
+  backdropUrl?: string | null;
+  trailerUrl?: string | null;
   description: string;
+  rating?: number | null;
+  ratingCount?: number | null;
+  runtimeMinutes?: number | null;
+  releaseStatus?: string | null;
+  dbId?: string;
 };

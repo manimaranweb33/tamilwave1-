@@ -145,7 +145,15 @@ model Content {
   publishedAt     DateTime?
   deletedAt       DateTime?
   posterUrl       String?
+  backdropUrl     String?
   trailerUrl      String?
+  country         String?
+  seriesSeasons   Int?
+  seriesEpisodes  Int?
+  seriesStatus    String?
+  originalLanguage String?
+  dubbedLanguage  String?
+  sourceTitle     String?
   rating          Float?
   ratingCount     Int?
   runtimeMinutes  Int?

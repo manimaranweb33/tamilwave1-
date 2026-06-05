@@ -2,6 +2,7 @@ import { ContentStatus, ContentType, PrismaClient, UserRole } from "@prisma/clie
 import bcrypt from "bcryptjs";
 import { mediaItems } from "../lib/catalog-data";
 import { ensureHomepageSections } from "../lib/admin/homepage-service";
+import { DEFAULT_STREAMING_PLATFORMS } from "../lib/admin/ensure-platforms";
 
 const prisma = new PrismaClient();
 const typeMap: Record<string, ContentType> = {
@@ -10,15 +11,12 @@ const typeMap: Record<string, ContentType> = {
   Dubbed: ContentType.DUBBED_MOVIE
 };
 
-const defaultPlatforms = ["Netflix", "Amazon Prime", "Disney+ Hotstar", "Zee5", "Sony LIV"];
-
 async function main() {
-  for (const name of defaultPlatforms) {
-    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  for (const platform of DEFAULT_STREAMING_PLATFORMS) {
     await prisma.platform.upsert({
-      where: { slug },
-      update: {},
-      create: { name, slug }
+      where: { slug: platform.slug },
+      update: { name: platform.name },
+      create: { name: platform.name, slug: platform.slug }
     });
   }
 

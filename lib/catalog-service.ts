@@ -5,7 +5,7 @@ import { toMediaItem, publicTypeToPrisma } from "@/lib/admin/content-mapper";
 import type { MediaItem, ContentType } from "@/lib/types";
 import type { ContentType as PrismaContentType } from "@prisma/client";
 
-const useDb = () => (process.env.CATALOG_SOURCE ?? "db") === "db";
+const isDbCatalog = () => (process.env.CATALOG_SOURCE ?? "db") === "db";
 
 const contentInclude = {
   genres: { include: { genre: true } },
@@ -23,7 +23,7 @@ export async function getPublishedContents(filters?: {
   featured?: boolean;
   trending?: boolean;
 }) {
-  if (!useDb()) {
+  if (!isDbCatalog()) {
     return filterStatic(filters);
   }
 
@@ -60,7 +60,7 @@ export async function getPublishedContents(filters?: {
 }
 
 export async function findPublishedBySlug(slug: string) {
-  if (!useDb()) {
+  if (!isDbCatalog()) {
     const item = staticItems.find((i) => i.slug === slug);
     return item ?? null;
   }
@@ -78,7 +78,7 @@ export async function findPublishedBySlug(slug: string) {
 }
 
 export async function findPublishedContentRecord(slug: string) {
-  if (!useDb()) return null;
+  if (!isDbCatalog()) return null;
 
   try {
     return await db.content.findFirst({
@@ -91,7 +91,7 @@ export async function findPublishedContentRecord(slug: string) {
 }
 
 export async function getAllPublishedSlugs() {
-  if (!useDb()) return staticItems.map((i) => i.slug);
+  if (!isDbCatalog()) return staticItems.map((i) => i.slug);
 
   try {
     const rows = await db.content.findMany({

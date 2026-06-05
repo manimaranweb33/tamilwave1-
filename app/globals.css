@@ -5,30 +5,109 @@
 :root {
   color-scheme: dark;
   --page: #111111;
-  --panel: #181a1b;
-  --muted: #9ca3a0;
+  --panel: #1a1a1a;
+  --elevated: #2a2a2a;
+  --muted: #aaaaaa;
+  --wave: #f5c518;
+  --mint: #ffe066;
+  --line: #333333;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   min-height: 100vh;
   background: var(--page);
-  color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  color: #ffffff;
+  font-family: var(--font-sans), system-ui, -apple-system, Segoe UI, sans-serif;
 }
-* { box-sizing: border-box; }
-::selection { background: #00c853; color: #07130b; }
 
-.shell { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
-.section-title { @apply text-xl font-black tracking-tight sm:text-2xl; }
-.subtle { @apply text-sm leading-6 text-zinc-400; }
-.panel { @apply rounded-2xl border border-line bg-panel; }
-
-.poster-lines::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(115deg, transparent 0 18px, rgba(255,255,255,.06) 19px 20px);
-  mix-blend-mode: screen;
+* {
+  box-sizing: border-box;
 }
-.text-balance { text-wrap: balance; }
+
+::selection {
+  background: var(--wave);
+  color: #111111;
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-title {
+    @apply text-xl font-black tracking-tight sm:text-2xl;
+  }
+
+  .font-display {
+    font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+  }
+
+  .subtle {
+    @apply text-sm leading-6 text-zinc-400;
+  }
+
+  .panel {
+    @apply rounded-2xl border border-line bg-panel;
+  }
+
+  .poster-lines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(115deg, transparent 0 18px, rgba(255, 255, 255, 0.06) 19px 20px);
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .rail-scroll {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(245, 197, 24, 0.4) transparent;
+  }
+
+  .rail-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .rail-scroll::-webkit-scrollbar-thumb {
+    background: rgba(245, 197, 24, 0.4);
+    border-radius: 999px;
+  }
+
+  .rail-fade::before,
+  .rail-fade::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 8px;
+    width: 28px;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .rail-fade::before {
+    left: 0;
+    background: linear-gradient(to right, var(--page), transparent);
+  }
+
+  .rail-fade::after {
+    right: 0;
+    background: linear-gradient(to left, var(--page), transparent);
+  }
+
+  @media (min-width: 640px) {
+    .rail-fade::before,
+    .rail-fade::after {
+      width: 40px;
+    }
+  }
+}

@@ -9,12 +9,13 @@ import {
 } from "@/lib/catalog-service";
 
 export const navItems = [
-  ["Home", "/#top"],
-  ["Tamil Movies", "/#tamil-movies"],
-  ["Web Series", "/#web-series"],
-  ["Dubbed Movies", "/#dubbed-movies"],
-  ["Trending", "/#trending"],
-  ["Latest Updates", "/#latest"]
+  ["Home", "/#hero"],
+  ["Top 10", "/#top-ten"],
+  ["Fan Favorites", "/#fan-favorites"],
+  ["Streaming", "/#streaming"],
+  ["In Theaters", "/#in-theaters"],
+  ["Box Office", "/#box-office"],
+  ["Coming Soon", "/#coming-soon"]
 ] as const;
 
 export const archiveYears = Array.from(

@@ -2,11 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Film, Home, LayoutDashboard, Users, Sparkles } from "lucide-react";
+import {
+  Clapperboard,
+  Film,
+  Home,
+  Image,
+  LayoutDashboard,
+  MonitorPlay,
+  Sparkles,
+  Tv,
+  Users
+} from "lucide-react";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/content", label: "Content", icon: Film },
+  { href: "/admin/movies", label: "Movies", icon: Film },
+  { href: "/admin/series", label: "Web Series", icon: Tv },
+  { href: "/admin/dubbed", label: "Dubbed", icon: Clapperboard },
+  { href: "/admin/content", label: "All Content", icon: Film },
+  { href: "/admin/platforms", label: "Platforms", icon: MonitorPlay },
+  { href: "/admin/media", label: "Media Library", icon: Image },
   { href: "/admin/homepage", label: "Homepage", icon: Sparkles },
   { href: "/admin/users", label: "Users", icon: Users, superOnly: true }
 ];

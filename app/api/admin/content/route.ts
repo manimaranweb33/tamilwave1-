@@ -28,6 +28,8 @@ export async function GET(request: Request) {
       { title: { contains: q, mode: "insensitive" } },
       { tamilTitle: { contains: q, mode: "insensitive" } },
       { slug: { contains: q, mode: "insensitive" } },
+      { genre: { contains: q, mode: "insensitive" } },
+      { sourceTitle: { contains: q, mode: "insensitive" } },
       { cast: { some: { person: { name: { contains: q, mode: "insensitive" } } } } }
     ];
   }

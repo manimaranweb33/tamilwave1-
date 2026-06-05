@@ -21,7 +21,7 @@ export function HeroEditor({ heroes: initial }: { heroes: Hero[] }) {
     title: active?.title ?? "Your next Tamil favorite starts here.",
     subtitle: active?.subtitle ?? "",
     ctaLabel: active?.ctaLabel ?? "Explore Releases",
-    ctaHref: active?.ctaHref ?? "#latest",
+    ctaHref: active?.ctaHref ?? "#recently-added",
     backgroundImageUrl: active?.backgroundImageUrl ?? ""
   });
   const [saving, setSaving] = useState(false);

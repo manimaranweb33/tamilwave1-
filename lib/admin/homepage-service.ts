@@ -1,4 +1,4 @@
-import { HomepageSectionKey } from "@prisma/client";
+import { ContentStatus, HomepageSectionKey } from "@prisma/client";
 import { db } from "@/lib/db";
 
 const SECTION_TITLES: Record<HomepageSectionKey, string> = {
@@ -78,7 +78,13 @@ export async function getPublicHomepageData() {
       where: { active: true },
       include: {
         slots: {
-          where: { active: true },
+          where: {
+            active: true,
+            content: {
+              status: ContentStatus.PUBLISHED,
+              deletedAt: null
+            }
+          },
           include: {
             content: {
               include: {

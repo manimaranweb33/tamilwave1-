@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { AdminToast } from "@/components/admin/ui/AdminToast";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 
 type Row = {
   id: string;
@@ -23,6 +25,12 @@ export function ContentTable({
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [confirm, setConfirm] = useState<"archive" | "delete" | null>(null);
+
+  const notify = useCallback((message: string, type: "success" | "error" = "success") => {
+    setToast({ message, type });
+  }, []);
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -33,20 +41,61 @@ export function ContentTable({
     });
   }
 
-  async function bulk(action: "delete" | "publish" | "draft") {
+  async function bulkStatus(action: "publish" | "draft" | "archive") {
     if (!selected.size) return;
     setLoading(true);
     const ids = Array.from(selected);
-    const url =
-      action === "delete" ? "/api/admin/content/bulk-delete" : "/api/admin/content/bulk-status";
-    const body =
-      action === "delete"
-        ? { ids }
-        : { ids, status: action === "publish" ? "PUBLISHED" : "DRAFT" };
-    await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-    setLoading(false);
-    setSelected(new Set());
-    router.refresh();
+    try {
+      if (action === "archive") {
+        const res = await fetch("/api/admin/content/bulk-delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids })
+        });
+        if (!res.ok) throw new Error("Archive failed");
+        notify(`${ids.length} item(s) archived.`);
+      } else {
+        const res = await fetch("/api/admin/content/bulk-status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ids,
+            status: action === "publish" ? "PUBLISHED" : "DRAFT"
+          })
+        });
+        if (!res.ok) throw new Error("Update failed");
+        notify(action === "publish" ? "Selected items published." : "Selected items unpublished.");
+      }
+      setSelected(new Set());
+      router.refresh();
+    } catch {
+      notify("Bulk action failed. Please try again.", "error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function bulkDeletePermanent() {
+    if (!selected.size) return;
+    setLoading(true);
+    const ids = Array.from(selected);
+    try {
+      const res = await fetch("/api/admin/content/permanent-delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids })
+      });
+      if (!res.ok) throw new Error("Delete failed");
+      const data = await res.json();
+      notify(`${data.deleted ?? ids.length} item(s) permanently deleted.`);
+      setSelected(new Set());
+      router.refresh();
+    } catch {
+      notify("Permanent delete failed. Please try again.", "error");
+    } finally {
+      setLoading(false);
+      setConfirm(null);
+    }
   }
 
   return (
@@ -56,24 +105,32 @@ export function ContentTable({
           <button
             type="button"
             disabled={loading}
-            onClick={() => bulk("publish")}
-            className="rounded-lg bg-wave px-3 py-1.5 text-xs font-black text-black"
+            onClick={() => bulkStatus("publish")}
+            className="rounded-lg bg-wave px-3 py-1.5 text-xs font-black text-black disabled:opacity-50"
           >
             Publish selected
           </button>
           <button
             type="button"
             disabled={loading}
-            onClick={() => bulk("draft")}
-            className="rounded-lg border border-line px-3 py-1.5 text-xs font-bold"
+            onClick={() => bulkStatus("draft")}
+            className="rounded-lg border border-line px-3 py-1.5 text-xs font-bold disabled:opacity-50"
           >
             Unpublish
           </button>
           <button
             type="button"
             disabled={loading}
-            onClick={() => bulk("delete")}
-            className="rounded-lg border border-red-800 px-3 py-1.5 text-xs font-bold text-red-400"
+            onClick={() => bulkStatus("archive")}
+            className="rounded-lg border border-amber-800 px-3 py-1.5 text-xs font-bold text-amber-400 disabled:opacity-50"
+          >
+            Archive selected
+          </button>
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => setConfirm("delete")}
+            className="rounded-lg border border-red-800 px-3 py-1.5 text-xs font-bold text-red-400 disabled:opacity-50"
           >
             Delete selected
           </button>
@@ -120,6 +177,19 @@ export function ContentTable({
           </tbody>
         </table>
       </div>
+
+      <ConfirmModal
+        open={confirm === "delete"}
+        title={`Delete ${selected.size} item(s) permanently?`}
+        message="This cannot be undone. Selected items will be permanently removed from the database."
+        confirmLabel="Delete permanently"
+        destructive
+        loading={loading}
+        onConfirm={bulkDeletePermanent}
+        onCancel={() => setConfirm(null)}
+      />
+
+      {toast ? <AdminToast message={toast.message} type={toast.type} onClose={() => setToast(null)} /> : null}
     </div>
   );
 }
