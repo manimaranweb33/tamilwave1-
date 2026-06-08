@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { ContentStatus } from "@prisma/client";
-import { requireEditorSession } from "@/lib/admin/session";
+import { requireCMSAccess } from "@/lib/admin/session";
 import { bulkUpdateStatus } from "@/lib/admin/content-service";
 import { bulkStatusSchema } from "@/lib/validations/content";
 import { logAudit } from "@/lib/admin/audit";
 
 export async function POST(request: Request) {
-  const { user, error } = await requireEditorSession();
+  const { user, error } = await requireCMSAccess();
   if (error) return error;
 
   try {

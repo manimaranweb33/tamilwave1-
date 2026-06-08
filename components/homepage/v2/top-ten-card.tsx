@@ -13,7 +13,7 @@ export function TopTenCard({ item, rank }: { item: MediaItem; rank: number }) {
   const rating = item.rating != null ? item.rating.toFixed(1) : null;
 
   useEffect(() => {
-    setSaved(isInWatchlist(item.slug));
+    isInWatchlist(item.slug).then(setSaved);
   }, [item.slug]);
 
   const background = item.posterUrl
@@ -37,10 +37,10 @@ export function TopTenCard({ item, rank }: { item: MediaItem; rank: number }) {
           <button
             type="button"
             aria-label={saved ? "Remove from watchlist" : "Add to watchlist"}
-            onClick={(e) => {
+            onClick={async (e) => {
               e.preventDefault();
               e.stopPropagation();
-              const added = toggleWatchlist({
+              const added = await toggleWatchlist({
                 slug: item.slug,
                 title: item.title,
                 posterUrl: item.posterUrl,

@@ -66,16 +66,31 @@ async function main() {
 
   await prisma.user.upsert({
     where: { email: adminEmail },
-    update: {},
+    update: { role: UserRole.ADMIN },
     create: {
       email: adminEmail,
-      name: "Super Admin",
+      name: "Admin",
       passwordHash,
-      role: UserRole.SUPER_ADMIN
+      role: UserRole.ADMIN
     }
   });
 
-  console.log(`Seeded ${mediaItems.length} content items. Admin: ${adminEmail}`);
+  const editorEmail = process.env.EDITOR_EMAIL ?? "editor@tamilwave.local";
+  const editorPassword = process.env.EDITOR_PASSWORD ?? "changeme123";
+  const editorHash = await bcrypt.hash(editorPassword, 12);
+
+  await prisma.user.upsert({
+    where: { email: editorEmail },
+    update: { role: UserRole.EDITOR },
+    create: {
+      email: editorEmail,
+      name: "Editor",
+      passwordHash: editorHash,
+      role: UserRole.EDITOR
+    }
+  });
+
+  console.log(`Seeded ${mediaItems.length} content items. Admin: ${adminEmail}, Editor: ${editorEmail}`);
 }
 
 main()

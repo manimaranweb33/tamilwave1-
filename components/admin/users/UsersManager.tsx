@@ -10,7 +10,7 @@ export function UsersManager({ users: initial }: { users: User[] }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState("EDITOR");
+  const [role, setRole] = useState("USER");
   const [error, setError] = useState<string | null>(null);
 
   async function createUser(e: React.FormEvent) {
@@ -40,9 +40,9 @@ export function UsersManager({ users: initial }: { users: User[] }) {
         <input type="password" className="rounded-lg border border-line bg-panel px-3 py-2 text-sm" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <input className="rounded-lg border border-line bg-panel px-3 py-2 text-sm" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
         <select className="rounded-lg border border-line bg-panel px-3 py-2 text-sm" value={role} onChange={(e) => setRole(e.target.value)}>
+          <option value="USER">User</option>
           <option value="EDITOR">Editor</option>
-          <option value="VIEWER">Viewer</option>
-          <option value="SUPER_ADMIN">Super Admin</option>
+          <option value="ADMIN">Admin</option>
         </select>
         {error && <p className="text-xs text-red-400">{error}</p>}
         <button type="submit" className="rounded-lg bg-wave py-2 text-sm font-black text-black">Create</button>

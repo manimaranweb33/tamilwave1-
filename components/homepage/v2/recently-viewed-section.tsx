@@ -1,18 +1,45 @@
 "use client";
 
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { readRecentlyViewed, type WatchlistEntry } from "@/lib/watchlist";
 import { ContentRail } from "@/components/ui/content-rail";
 import { SectionHeader } from "@/components/ui/section-header";
 import { History } from "lucide-react";
+import { UserSessionProvider } from "@/components/auth/UserSessionProvider";
 
-export function RecentlyViewedSection() {
+function RecentlyViewedSectionInner() {
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
   const [items, setItems] = useState<WatchlistEntry[]>([]);
 
   useEffect(() => {
-    setItems(readRecentlyViewed());
-  }, []);
+    setItems([]);
+
+    if (status === "loading") return;
+
+    if (!userId) {
+      setItems(readRecentlyViewed());
+      return;
+    }
+
+    let active = true;
+    const controller = new AbortController();
+
+    fetch("/api/user/recently-viewed", { signal: controller.signal })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!active) return;
+        setItems(data?.items ?? []);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [userId, status]);
 
   if (!items.length) return null;
 
@@ -43,5 +70,13 @@ export function RecentlyViewedSection() {
         ))}
       </ContentRail>
     </section>
+  );
+}
+
+export function RecentlyViewedSection() {
+  return (
+    <UserSessionProvider>
+      <RecentlyViewedSectionInner />
+    </UserSessionProvider>
   );
 }

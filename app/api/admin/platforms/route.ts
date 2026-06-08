@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { requireAdminSession, requireEditorSession } from "@/lib/admin/session";
+import { requireCMSAccess } from "@/lib/admin/session";
 import { ensureDefaultPlatforms } from "@/lib/admin/ensure-platforms";
 import { platformSchema } from "@/lib/validations/platform";
 import { revalidatePath } from "next/cache";
 
 export async function GET() {
-  const { error } = await requireAdminSession();
+  const { error } = await requireCMSAccess();
   if (error) return error;
 
   await ensureDefaultPlatforms();
@@ -18,7 +18,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { error } = await requireEditorSession();
+  const { error } = await requireCMSAccess();
   if (error) return error;
 
   try {
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const { error } = await requireEditorSession();
+  const { error } = await requireCMSAccess();
   if (error) return error;
 
   const body = await request.json();
@@ -62,7 +62,7 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const { error } = await requireEditorSession();
+  const { error } = await requireCMSAccess();
   if (error) return error;
 
   const { id } = await request.json();

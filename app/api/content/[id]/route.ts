@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
-import { requireEditorSession } from "@/lib/admin/session";
+import { requireCMSAccess } from "@/lib/admin/session";
 import { updateContent, softDeleteContent } from "@/lib/admin/content-service";
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
-  const session = await requireEditorSession();
+  const session = await requireCMSAccess();
   const bearer = requireAdmin(request);
   if (session.error && bearer) return bearer;
   if (session.error) return session.error;
@@ -19,7 +19,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const session = await requireEditorSession();
+  const session = await requireCMSAccess();
   const bearer = requireAdmin(request);
   if (session.error && bearer) return bearer;
   if (session.error) return session.error;

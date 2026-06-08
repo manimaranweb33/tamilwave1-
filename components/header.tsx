@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { navItems } from "@/lib/catalog";
 import { Logo } from "@/components/logo";
+import { UserNav } from "@/components/auth/UserNav";
 
 function SearchBar({
   className = "",
@@ -142,6 +143,10 @@ export function Header() {
           <SearchBar />
         </div>
 
+        <div className="hidden lg:block">
+          <UserNav />
+        </div>
+
         <button
           type="button"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -181,7 +186,10 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <div className="mt-auto border-t border-line pt-4">
+          <div className="mt-6 border-t border-line pt-4">
+            <UserNav />
+          </div>
+          <div className="mt-4 border-t border-line pt-4">
             <p className="mb-2 text-[10px] font-black uppercase tracking-[.2em] text-zinc-500">Categories</p>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <Link className="rounded-lg border border-line px-3 py-2 text-zinc-400 hover:border-wave hover:text-wave" href="/category/movies" onClick={() => setMenuOpen(false)}>

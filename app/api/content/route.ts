@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
-import { getAdminSession, requireEditorSession } from "@/lib/admin/session";
+import { getCMSession, requireCMSAccess } from "@/lib/admin/session";
 import { db } from "@/lib/db";
 import { createContent } from "@/lib/admin/content-service";
 
 /** Legacy/script API — prefer /api/admin/content */
 export async function GET(request: Request) {
-  const session = await getAdminSession();
+  const session = await getCMSession();
   if (!session) {
     const unauthorized = requireAdmin(request);
     if (unauthorized) return unauthorized;
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const session = await requireEditorSession();
+  const session = await requireCMSAccess();
   const bearer = requireAdmin(request);
   if (session.error && bearer) return bearer;
   if (session.error) return session.error;

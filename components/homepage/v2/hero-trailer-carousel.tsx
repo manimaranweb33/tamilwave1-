@@ -28,7 +28,8 @@ export function HeroTrailerCarousel({ slides }: { slides: HeroSlide[] }) {
   }, [go, slides.length]);
 
   useEffect(() => {
-    if (active) setWatchlisted(isInWatchlist(active.slug));
+    if (!active) return;
+    isInWatchlist(active.slug).then(setWatchlisted);
   }, [active]);
 
   if (!active) {
@@ -48,8 +49,8 @@ export function HeroTrailerCarousel({ slides }: { slides: HeroSlide[] }) {
     undefined;
   const ytId = extractYouTubeId(active.trailerUrl);
 
-  function onWatchlist() {
-    const added = toggleWatchlist({
+  async function onWatchlist() {
+    const added = await toggleWatchlist({
       slug: active.slug,
       title: active.title,
       posterUrl: active.posterUrl,

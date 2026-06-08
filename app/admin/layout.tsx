@@ -1,17 +1,17 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth/auth";
+import { adminAuth } from "@/lib/auth/admin-auth";
 import { AdminSidebar } from "@/components/admin/layout/AdminSidebar";
 import { AdminHeader } from "@/components/admin/layout/AdminHeader";
-import { SessionProvider } from "@/components/admin/providers/SessionProvider";
+import { AdminSessionProvider } from "@/components/auth/AdminSessionProvider";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth();
+  const session = await adminAuth();
   if (!session?.user) {
     return <>{children}</>;
   }
 
   return (
-    <SessionProvider>
+    <AdminSessionProvider>
       <div className="flex min-h-screen bg-ink text-white">
         <AdminSidebar role={session.user.role} />
         <div className="flex flex-1 flex-col">
@@ -19,6 +19,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div className="flex-1 p-6">{children}</div>
         </div>
       </div>
-    </SessionProvider>
+    </AdminSessionProvider>
   );
 }

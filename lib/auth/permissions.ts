@@ -1,23 +1,49 @@
 import type { UserRole } from "@prisma/client";
 
-export type AdminUser = { id: string; email: string; role: UserRole; name?: string | null };
+export type AuthUser = {
+  id: string;
+  email: string;
+  role: UserRole;
+  name?: string | null;
+  image?: string | null;
+};
 
-export function canViewAdmin(user: AdminUser | null | undefined) {
-  return !!user;
+export function isUserRole(role: UserRole) {
+  return role === "USER";
 }
 
-export function canEditContent(user: AdminUser | null | undefined) {
-  return user?.role === "SUPER_ADMIN" || user?.role === "EDITOR";
+export function isEditorRole(role: UserRole) {
+  return role === "EDITOR" || role === "ADMIN";
 }
 
-export function canManageUsers(user: AdminUser | null | undefined) {
-  return user?.role === "SUPER_ADMIN";
+export function isAdminRole(role: UserRole) {
+  return role === "ADMIN";
 }
 
-export function canBulkDelete(user: AdminUser | null | undefined) {
-  return user?.role === "SUPER_ADMIN" || user?.role === "EDITOR";
+export function canAccessAdmin(user: AuthUser | null | undefined) {
+  return user?.role === "ADMIN";
 }
 
-export function canManageHomepage(user: AdminUser | null | undefined) {
-  return user?.role === "SUPER_ADMIN" || user?.role === "EDITOR";
+export function canAccessEditor(user: AuthUser | null | undefined) {
+  return user?.role === "EDITOR" || user?.role === "ADMIN";
+}
+
+export function canEditContent(user: AuthUser | null | undefined) {
+  return user?.role === "EDITOR" || user?.role === "ADMIN";
+}
+
+export function canManageUsers(user: AuthUser | null | undefined) {
+  return user?.role === "ADMIN";
+}
+
+export function canBulkDelete(user: AuthUser | null | undefined) {
+  return user?.role === "EDITOR" || user?.role === "ADMIN";
+}
+
+export function canManageHomepage(user: AuthUser | null | undefined) {
+  return user?.role === "EDITOR" || user?.role === "ADMIN";
+}
+
+export function canManageSettings(user: AuthUser | null | undefined) {
+  return user?.role === "ADMIN";
 }

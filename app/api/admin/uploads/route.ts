@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { requireEditorSession } from "@/lib/admin/session";
+import { requireCMSAccess } from "@/lib/admin/session";
 import { getStorage, validateUpload } from "@/lib/storage";
 
 export async function POST(request: Request) {
-  const { user, error } = await requireEditorSession();
+  const { user, error } = await requireCMSAccess();
   if (error) return error;
 
   const form = await request.formData();
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const { error } = await requireEditorSession();
+  const { error } = await requireCMSAccess();
   if (error) return error;
 
   const { key } = await request.json();

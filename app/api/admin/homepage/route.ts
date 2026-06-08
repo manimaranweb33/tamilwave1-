@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server";
 import { HomepageSectionKey } from "@prisma/client";
-import { requireAdminSession, requireEditorSession } from "@/lib/admin/session";
+import { requireCMSAccess } from "@/lib/admin/session";
 import { getHomepageSections, updateSectionSlots } from "@/lib/admin/homepage-service";
 import { homepageUpdateSchema } from "@/lib/validations/homepage";
 import { HOMEPAGE_SECTION_LIMITS } from "@/lib/homepage-config";
 import { revalidatePath } from "next/cache";
 
 export async function GET() {
-  const { error } = await requireAdminSession();
+  const { error } = await requireCMSAccess();
   if (error) return error;
   const sections = await getHomepageSections();
   return NextResponse.json({ sections });
 }
 
 export async function PATCH(request: Request) {
-  const { error } = await requireEditorSession();
+  const { error } = await requireCMSAccess();
   if (error) return error;
 
   try {

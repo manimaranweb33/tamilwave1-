@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { requireAdminSession, requireEditorSession } from "@/lib/admin/session";
+import { requireCMSAccess } from "@/lib/admin/session";
 import { archiveContent, contentInclude, updateContent } from "@/lib/admin/content-service";
 import { contentToAdminJson } from "@/lib/admin/content-mapper";
 import { logAudit } from "@/lib/admin/audit";
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
-  const { error } = await requireAdminSession();
+  const { error } = await requireCMSAccess();
   if (error) return error;
 
   const item = await db.content.findFirst({
@@ -18,7 +18,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 }
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
-  const { user, error } = await requireEditorSession();
+  const { user, error } = await requireCMSAccess();
   if (error) return error;
 
   try {
@@ -39,7 +39,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 }
 
 export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
-  const { user, error } = await requireEditorSession();
+  const { user, error } = await requireCMSAccess();
   if (error) return error;
 
   await archiveContent(params.id);

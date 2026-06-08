@@ -7,6 +7,7 @@ import { TitleHero } from "@/components/title/title-hero";
 import { TitlePlatforms } from "@/components/title/title-platforms";
 import { TitleRelated } from "@/components/title/title-related";
 import { TitleViewTracker } from "@/components/title/title-view-tracker";
+import { TitleRating } from "@/components/title/title-rating";
 import { getAllPublishedSlugs } from "@/lib/catalog";
 import { mediaItems as staticItems } from "@/lib/catalog-data";
 import {
@@ -69,6 +70,10 @@ export default async function TitlePage({ params }: { params: { slug: string } }
       />
 
       <TitleHero title={title} />
+
+      <div className="mt-5 sm:mt-6">
+        <TitleRating slug={title.slug} />
+      </div>
 
       {title.trailerUrl ? (
         <div className="mt-5 sm:mt-6">

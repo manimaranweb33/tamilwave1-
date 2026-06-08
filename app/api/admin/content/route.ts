@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { ContentStatus, ContentType, type Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
-import { requireAdminSession, requireEditorSession } from "@/lib/admin/session";
+import { requireCMSAccess } from "@/lib/admin/session";
 import { contentInclude, createContent } from "@/lib/admin/content-service";
 import { contentToAdminJson } from "@/lib/admin/content-mapper";
 import { logAudit } from "@/lib/admin/audit";
 import { checkApiRateLimit } from "@/lib/admin/rate-limit";
 
 export async function GET(request: Request) {
-  const { user, error } = await requireAdminSession();
+  const { user, error } = await requireCMSAccess();
   if (error) return error;
 
   const { searchParams } = new URL(request.url);
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const { user, error } = await requireEditorSession();
+  const { user, error } = await requireCMSAccess();
   if (error) return error;
   const limitErr = checkApiRateLimit(`content-write:${user!.id}`);
   if (limitErr) return NextResponse.json({ error: limitErr }, { status: 429 });

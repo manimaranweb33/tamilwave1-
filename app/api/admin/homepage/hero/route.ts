@@ -1,18 +1,18 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { requireAdminSession, requireEditorSession } from "@/lib/admin/session";
+import { requireCMSAccess } from "@/lib/admin/session";
 import { heroSchema } from "@/lib/validations/homepage";
 import { revalidatePath } from "next/cache";
 
 export async function GET() {
-  const { error } = await requireAdminSession();
+  const { error } = await requireCMSAccess();
   if (error) return error;
   const heroes = await db.heroBanner.findMany({ orderBy: { updatedAt: "desc" } });
   return NextResponse.json({ heroes });
 }
 
 export async function POST(request: Request) {
-  const { error } = await requireEditorSession();
+  const { error } = await requireCMSAccess();
   if (error) return error;
 
   try {
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const { error } = await requireEditorSession();
+  const { error } = await requireCMSAccess();
   if (error) return error;
 
   const body = await request.json();

@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { requireEditorSession } from "@/lib/admin/session";
+import { requireCMSAccess } from "@/lib/admin/session";
 import { bulkPermanentDelete, permanentDeleteContent } from "@/lib/admin/content-service";
 import { bulkDeleteSchema } from "@/lib/validations/content";
 import { logAudit } from "@/lib/admin/audit";
 
 export async function POST(request: Request) {
-  const { user, error } = await requireEditorSession();
+  const { user, error } = await requireCMSAccess();
   if (error) return error;
 
   try {

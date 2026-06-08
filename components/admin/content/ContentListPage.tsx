@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ContentType } from "@prisma/client";
-import { auth } from "@/lib/auth/auth";
+import { adminAuth } from "@/lib/auth/admin-auth";
+import { editorAuth } from "@/lib/auth/editor-auth";
 import { listAdminContent } from "@/lib/admin/content-queries";
 import { canEditContent } from "@/lib/auth/permissions";
 import { ContentTable } from "@/components/admin/content/ContentTable";
@@ -16,14 +17,17 @@ const TYPE_LABELS: Record<string, string> = {
 export async function ContentListPage({
   fixedType,
   basePath,
-  searchParams
+  searchParams,
+  portal = "admin"
 }: {
   fixedType?: ContentType;
   basePath: string;
   searchParams: { q?: string; type?: string; status?: string; page?: string };
+  portal?: "admin" | "editor";
 }) {
-  const session = await auth();
-  if (!session?.user) redirect("/admin/login");
+  const session = portal === "editor" ? await editorAuth() : await adminAuth();
+  const loginPath = portal === "editor" ? "/editor/login" : "/admin/login";
+  if (!session?.user) redirect(loginPath);
 
   const page = Math.max(Number(searchParams.page) || 1, 1);
   const { items, total, pages } = await listAdminContent({
@@ -41,9 +45,8 @@ export async function ContentListPage({
   });
 
   const title = fixedType ? TYPE_LABELS[fixedType] : "All Content";
-  const newHref = fixedType
-    ? `/admin/content/new?type=${fixedType}`
-    : "/admin/content/new";
+  const contentBase = portal === "editor" ? "/editor/content" : "/admin/content";
+  const newHref = fixedType ? `${contentBase}/new?type=${fixedType}` : `${contentBase}/new`;
 
   return (
     <div>
@@ -86,7 +89,7 @@ export async function ContentListPage({
       </form>
 
       <div className="mt-6">
-        <ContentTable items={items} canEdit={canEdit} />
+        <ContentTable items={items} canEdit={canEdit} editBasePath={contentBase} />
       </div>
 
       <Pagination

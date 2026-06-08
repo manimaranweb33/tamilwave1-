@@ -17,10 +17,12 @@ type Row = {
 
 export function ContentTable({
   items,
-  canEdit
+  canEdit,
+  editBasePath = "/admin/content"
 }: {
   items: Row[];
   canEdit: boolean;
+  editBasePath?: string;
 }) {
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -156,7 +158,7 @@ export function ContentTable({
                   </td>
                 )}
                 <td className="p-3">
-                  <Link href={`/admin/content/${item.id}`} className="font-bold hover:text-wave">
+                  <Link href={`${editBasePath}/${item.id}`} className="font-bold hover:text-wave">
                     {item.title}
                   </Link>
                   <p className="text-[10px] text-zinc-600">{item.slug}</p>

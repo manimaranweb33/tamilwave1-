@@ -1,5 +1,5 @@
-import { SessionProvider } from "@/components/admin/providers/SessionProvider";
+import { AdminSessionProvider } from "@/components/auth/AdminSessionProvider";
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {
-  return <SessionProvider>{children}</SessionProvider>;
+  return <AdminSessionProvider>{children}</AdminSessionProvider>;
 }

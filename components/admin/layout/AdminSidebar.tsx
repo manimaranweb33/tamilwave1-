@@ -35,7 +35,7 @@ export function AdminSidebar({ role }: { role: string }) {
       </Link>
       <nav className="grid gap-1">
         {links
-          .filter((l) => !l.superOnly || role === "SUPER_ADMIN")
+          .filter((l) => !l.superOnly || role === "ADMIN")
           .map(({ href, label, icon: Icon }) => {
             const active = pathname === href || (href !== "/admin" && pathname.startsWith(href));
             return (
